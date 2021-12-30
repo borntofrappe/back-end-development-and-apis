@@ -28,8 +28,8 @@ There are two required fields: `name` and `version`.
 
 ```json
 {
-    name: "project",
-    version: 1.0.0
+  "name": "project",
+  "version": "1.0.0"
 }
 ```
 
@@ -334,9 +334,11 @@ Past the GET method, the POST method is used to send information and ultimately 
 To retrieve data in a urlencoded format begin by installing `body-parser`.
 
 ```json
-"dependencies": {
-		"body-parser": "^1.15.2",
-},
+{
+  "dependencies": {
+    "body-parser": "^1.15.2"
+  }
+}
 ```
 
 In the script include the body parser with a middleware function.
@@ -395,18 +397,23 @@ Start by creating an account and database with MongoDB atlas [following this art
 Once you created an account, a database, a cluster, a user who can read and update the data, the necessary IP address permissions, install mongodb and mongoose with specific versions.
 
 ```json
- "dependencies": {
+{
+  "dependencies": {
     "mongodb": "~3.6.0",
     "mongoose": "~5.4.0"
-},
+  }
+}
 ```
 
 Add an environmental veriable `MONGO_URI` pointing to the database URI. The link is retrieved from the cluster selecting the _connect_ option.
 
 In the script require mongoose and establish a connection through the URI.
 
-```json
-mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true })
+```js
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 ```
 
 #### Mongoose basics
