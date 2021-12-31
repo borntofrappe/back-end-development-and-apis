@@ -66,3 +66,26 @@ Considering the tests run on the project the microservice should focus on specif
     error: "Invalid Date",
   });
   ```
+
+## Local development
+
+Completing the project locally requires cloning the [provided GitHub repository](https://github.com/freeCodeCamp/boilerplate-project-timestamp/). From this starting point it is necessary to:
+
+1. install the necessary packages:
+
+   ```bash
+   npm install
+   ```
+
+2. set up the routes in `server.js`
+
+   ```js
+   app.get("/api", function (req, res) {});
+   app.get("/api/:date", function (req, res) {});
+   ```
+
+3. run the project
+
+   ```bash
+   npm run start
+   ```
