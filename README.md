@@ -15,6 +15,14 @@ Notes and solutions to earn the [Back End Development and APIs](https://www.free
 
 ### [Request Header Parser Microservice](https://www.freecodecamp.org/learn/back-end-development-and-apis/back-end-development-and-apis-projects/request-header-parser-microservice)
 
+```json
+{
+  "ipaddress": "5.90.71.93",
+  "language": "en-US,en;q=0.5",
+  "software": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:95.0) Gecko/20100101 Firefox/94.0"
+}
+```
+
 ### [URL Shortener Microservice](https://www.freecodecamp.org/learn/back-end-development-and-apis/back-end-development-and-apis-projects/url-shortener-microservice)
 
 ### [Exercise Tracker](https://www.freecodecamp.org/learn/back-end-development-and-apis/back-end-development-and-apis-projects/exercise-tracker)
