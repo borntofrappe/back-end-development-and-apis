@@ -6,6 +6,13 @@ Notes and solutions to earn the [Back End Development and APIs](https://www.free
 
 ### [Timestamp Microservice](https://www.freecodecamp.org/learn/back-end-development-and-apis/back-end-development-and-apis-projects/timestamp-microservice)
 
+```json
+{
+  "unix": 1640945341499,
+  "utc": "Fri, 31 Dec 2021 10:09:01 GMT"
+}
+```
+
 ### [Request Header Parser Microservice](https://www.freecodecamp.org/learn/back-end-development-and-apis/back-end-development-and-apis-projects/request-header-parser-microservice)
 
 ### [URL Shortener Microservice](https://www.freecodecamp.org/learn/back-end-development-and-apis/back-end-development-and-apis-projects/url-shortener-microservice)

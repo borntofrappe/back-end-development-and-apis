@@ -14,12 +14,12 @@ The goal of the project is to provide a JSON object for a date, specifying the t
 
 ```json
 {
-  "unix": "1451001600000",
+  "unix": 1451001600000,
   "utc": "Fri, 25 Dec 2015 00:00:00 GMT"
 }
 ```
 
-Considering the tests run on the project the microservice should focus on specific routes and query parameters:
+Considering the tests run on the project the microservice should focus on specific routes and route parameters:
 
 - respond to a request to `/api` with the current date
 
@@ -34,17 +34,17 @@ Considering the tests run on the project the microservice should focus on specif
 
   `toGMTString()` provides the string in the desired format. `getTime()` retrieves the number of milliseconds since Unix Epoch
 
-- respond to a request to `/api/:date` with a date according to the query parameter
+- respond to a request to `/api/:date` with a date according to the route parameter
 
-  The logic is here slightly complicated by the fact that the query parameter might create an invalid date, and by the fact the value might be a number of milliseconds or a date string.
+  The logic is here slightly complicated by the fact that the route parameter might create an invalid date, and by the fact the value might be a number of milliseconds or a date string.
 
-  With a valid date string the date object is created directly passing the query parameter to the `new Date()` constructor.
+  With a valid date string the date object is created directly passing the route parameter to the `new Date()` constructor.
 
   ```js
   const date = new Date(req.params.date);
   ```
 
-  With a number of milliseconds the constructor requires the value as a number, not a string.
+  With a number of milliseconds the constructor requires the value as a number, not a string. It is therefore necessary to try and parse the value retrieved from the parameter object.
 
   ```js
   const date = new Date(parseInt(req.params.date, 10));
