@@ -3,8 +3,20 @@ const dns = require("dns");
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
 
-const shorturls = [];
+const urlSchema = new mongoose.Schema({
+  original_url: {
+    type: String,
+    required: true,
+  },
+  short_url: {
+    type: Number,
+    required: true,
+  },
+});
+
+const Url = mongoose.model("Url", urlSchema);
 
 const app = express();
 
@@ -39,22 +51,53 @@ app.post("/api/shorturl", function (req, res) {
           error: "Invalid URL",
         });
       } else {
-        const shorturl = shorturls.find((d) => d.original_url === url);
-        if (shorturl) {
-          const { original_url, short_url } = shorturl;
-          res.json({
-            original_url,
-            short_url,
-          });
-        } else {
-          const short_url = shorturls.length;
-          const shorturl = {
+        Url.findOne(
+          {
             original_url: url,
-            short_url,
-          };
-          shorturls.push(shorturl);
-          res.json(shorturl);
-        }
+          },
+          (err, data) => {
+            if (err) {
+              res.json({
+                error: err,
+              });
+            } else {
+              if (data) {
+                const { original_url, short_url } = data;
+                res.json({
+                  original_url,
+                  short_url,
+                });
+              } else {
+                Url.find({}, (err, data) => {
+                  if (err) {
+                    res.json({
+                      error: err,
+                    });
+                  } else {
+                    const urlDocument = new Url({
+                      original_url: url,
+                      short_url: data.length,
+                    });
+
+                    urlDocument.save((err, data) => {
+                      if (err) {
+                        res.json({
+                          error: err,
+                        });
+                      } else {
+                        const { original_url, short_url } = data;
+                        res.json({
+                          original_url,
+                          short_url,
+                        });
+                      }
+                    });
+                  }
+                });
+              }
+            }
+          }
+        );
       }
     });
   } else {
@@ -69,15 +112,26 @@ app.post("/api/shorturl", function (req, res) {
 app.get("/api/shorturl/:short_url", function (req, res) {
   const short_url = parseInt(req.params.short_url, 10);
   if (short_url !== NaN) {
-    const shorturl = shorturls.find((d) => d.short_url === short_url);
-
-    if (shorturl) {
-      res.redirect(shorturl.original_url);
-    } else {
-      res.json({
-        error: "No short URL found for the given input",
-      });
-    }
+    Url.findOne(
+      {
+        short_url,
+      },
+      (err, data) => {
+        if (err) {
+          res.json({
+            error: err,
+          });
+        } else {
+          if (data) {
+            res.redirect(data.original_url);
+          } else {
+            res.json({
+              error: "No short URL found for the given input",
+            });
+          }
+        }
+      }
+    );
   } else {
     res.json({
       error: "Wrong format",
@@ -85,6 +139,14 @@ app.get("/api/shorturl/:short_url", function (req, res) {
   }
 });
 
-app.listen(port, function () {
-  console.log(`Listening on port ${port}`);
-});
+mongoose
+  .connect(process.env.MONGO_URI, { useNewUrlParser: true })
+  .then(() => {
+    app.listen(port, function () {
+      console.log(`Listening on port ${port}`);
+    });
+  })
+  .catch((error) => {
+    console.log(error);
+    process.exit(1);
+  });

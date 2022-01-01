@@ -6,7 +6,7 @@ Create an application similar [to the example URL Shortener Microservice](https:
 
 - [Assignment](https://www.freecodecamp.org/learn/back-end-development-and-apis/back-end-development-and-apis-projects/url-shortener-microservice)
 
-- [REPL](https://replit.com/@borntofrappe/boilerplate-project-urlshortener)
+- [Solution](https://replit.com/@borntofrappe/boilerplate-project-urlshortener)
 
 - [Solution without a database](https://replit.com/@borntofrappe/boilerplate-project-urlshortener-nodb)
 
@@ -162,4 +162,4 @@ res.json({
 });
 ```
 
-<!-- ### Database -->
+### MongoDB and mongoose
