@@ -25,6 +25,13 @@ Notes and solutions to earn the [Back End Development and APIs](https://www.free
 
 ### [URL Shortener Microservice](https://www.freecodecamp.org/learn/back-end-development-and-apis/back-end-development-and-apis-projects/url-shortener-microservice)
 
+```json
+{
+  "original_url": "https://github.com/borntofrappe/back-end-development-and-apis",
+  "short_url": 2
+}
+```
+
 ### [Exercise Tracker](https://www.freecodecamp.org/learn/back-end-development-and-apis/back-end-development-and-apis-projects/exercise-tracker)
 
 ### [File Metadata Microservice](https://www.freecodecamp.org/learn/back-end-development-and-apis/back-end-development-and-apis-projects/file-metadata-microservice)

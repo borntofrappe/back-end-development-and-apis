@@ -162,4 +162,118 @@ res.json({
 });
 ```
 
-### MongoDB and mongoose
+### Database
+
+With the inclusion of MongoDB and Mongoose the idea is to have data persist in a database. With a database and a cluster on MongoDB Atlas establish a connection storing the URI in a secret `.env` file.
+
+```.env
+MONGO_URI=mongodb+srv://...
+```
+
+Pass the value through the `process` global in the first argument of `mongoose.connect`.
+
+```js
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true });
+```
+
+Since `mongoose.connect` creates a promise you can chain the logic of the express application in a `.then` function.
+
+```js
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true }).then(() => {
+  app.listen(port, function () {
+    console.log(`Listening on port ${port}`);
+  });
+});
+```
+
+In this manner the application listen on the prescribed port only when a connection is indeed established.
+
+With a valid connection the idea is to replace the logic of the NoDB section, storing and retrieving items in an array, with mongoose queries. As a setup, begin by creating a schema with the values expected by a URL.
+
+```js
+const urlSchema = new mongoose.Schema({
+  original_url: {
+    type: String,
+    required: true,
+  },
+  short_url: {
+    type: Number,
+    required: true,
+  },
+});
+```
+
+Based on the schema create the model used as a mold for any document, for any URL created with the POST request.
+
+```js
+const Url = mongoose.model("Url", urlSchema);
+```
+
+With this information mongoose is already able to complete the application.
+
+With the GET method, instead of looking for the data in the array with `.find`, look for a document with a matching short reference through the model and the `findOne` query.
+
+```js
+Url.findOne(
+  {
+    short_url,
+  },
+  (err, data) => {}
+);
+```
+
+The code becomes increasingly indented as you consider both the error of the query, an error in the connection, and the presence of actual data. With a document redirect toward the original URL.
+
+```js
+if (data) {
+  res.redirect(data.original_url);
+}
+```
+
+Without a match prompt the same error message used for the NoDB section.
+
+With the POST method begin once more by looking for a document with the `findOne` query. Instead of a URL with a specific short reference, however, look for a URL with a specific link.
+
+```js
+Url.findOne(
+  {
+    original_url: url,
+  },
+  (err, data) => {}
+);
+```
+
+With a match return the JSON object describing the existing entry. Without a correspondence the idea is to create a document and save it, but it's first necessary to count the number of existing documents to create the short reference. A first solution is to retrieve all documents and use the `length` of the collection.
+
+```js
+Url.find({}, (err, data) => {
+  console.log(data.length);
+});
+```
+
+However, mongoose has a query fit for the purpose in `estimatedDocumentCount`.
+
+```js
+Url.estimatedDocumentCount((err, count) => {
+  console.log(count);
+});
+```
+
+With the number of documents create an instance of the model.
+
+```js
+const urlDocument = new Url({
+  original_url: url,
+  short_url: count,
+});
+```
+
+Save the document with the `save` query.
+
+```js
+urlDocument.save((err, data) => {
+  if (!err) {
+    console.log("success!");
+  }
+});
+```

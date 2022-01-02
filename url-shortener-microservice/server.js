@@ -68,7 +68,7 @@ app.post("/api/shorturl", function (req, res) {
                   short_url,
                 });
               } else {
-                Url.find({}, (err, data) => {
+                Url.estimatedDocumentCount((err, count) => {
                   if (err) {
                     res.json({
                       error: err,
@@ -76,7 +76,7 @@ app.post("/api/shorturl", function (req, res) {
                   } else {
                     const urlDocument = new Url({
                       original_url: url,
-                      short_url: data.length,
+                      short_url: count,
                     });
 
                     urlDocument.save((err, data) => {
