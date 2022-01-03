@@ -8,7 +8,7 @@ Create an application similar [to the example Exercise Tracker](https://exercise
 
 - [Solution](https://replit.com/@borntofrappe/boilerplate-project-exercisetracker)
 
-## Assignment
+## Notes
 
 The assignment asks to support several routes and methods.
 
