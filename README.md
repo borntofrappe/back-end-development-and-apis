@@ -65,6 +65,14 @@ Notes and solutions to earn the [Back End Development and APIs](https://www.free
 
 ### [File Metadata Microservice](https://www.freecodecamp.org/learn/back-end-development-and-apis/back-end-development-and-apis-projects/file-metadata-microservice)
 
+```json
+{
+  "name": "data.csv",
+  "type": "text/csv",
+  "size": 268602
+}
+```
+
 ## Courses
 
 ### Managing Packages with NPM
