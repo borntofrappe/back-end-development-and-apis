@@ -6,6 +6,8 @@ Create an application similar [to the example Exercise Tracker](https://exercise
 
 - [Assignment](https://www.freecodecamp.org/learn/back-end-development-and-apis/back-end-development-and-apis-projects/exercise-tracker)
 
+- [Solution without a database](https://replit.com/@borntofrappe/boilerplate-project-exercisetracker-nodb)
+
 - [Solution](https://replit.com/@borntofrappe/boilerplate-project-exercisetracker)
 
 ## Notes
@@ -126,3 +128,9 @@ Response: the same for the `GET` request retrieving all entries, adapted to the 
 ```
 
 Parameters are optional. `from` and `to` are dates in `yyyy-mm-dd` format. `limit` is an integer.
+
+### Database
+
+> The major difference is that subdocuments are not saved individually, they are saved whenever their top-level parent document is saved.
+>
+> https://mongoosejs.com/docs/subdocs.html#what-is-a-subdocument

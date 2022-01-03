@@ -3,10 +3,7 @@ const app = express();
 const cors = require("cors");
 require("dotenv").config();
 const bodyParser = require("body-parser");
-
-const tracker = [];
-
-app.use(bodyParser.urlencoded({ extended: false }));
+const mongoose = require("mongoose");
 
 app.use(cors());
 app.use(express.static("public"));
@@ -14,83 +11,152 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/views/index.html");
 });
 
+const exerciseSchema = new mongoose.Schema({
+  description: {
+    type: String,
+    required: true,
+  },
+  duration: {
+    type: Number,
+    required: true,
+  },
+  date: {
+    type: Date,
+    default: new Date(),
+  },
+});
+
+const userSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+  },
+  log: {
+    type: [exerciseSchema],
+    default: [],
+  },
+});
+
+const Exercise = mongoose.model("Exercise", exerciseSchema);
+const User = mongoose.model("User", userSchema);
+
+app.use(bodyParser.urlencoded({ extended: false }));
+
 app
   .route("/api/users")
   .get((req, res) => {
-    const users = tracker.map(({ _id, username }) => ({ _id, username }));
-    res.json(users);
+    User.find({})
+      .select("username")
+      .exec((err, data) => {
+        if (err) {
+          res.json({ err });
+        } else {
+          res.json(data);
+        }
+      });
   })
   .post((req, res) => {
     const { username } = req.body;
-    const user = {
-      _id: tracker.length.toString(),
-      username,
-      log: [],
-    };
-    tracker.push(user);
 
-    res.json({
-      username: user.username,
-      _id: user._id,
+    const user = new User({
+      username,
+    });
+
+    user.save((err, data) => {
+      if (err) {
+        res.json({ err });
+      } else {
+        const { _id, username } = data;
+        res.json({
+          username,
+          _id,
+        });
+      }
     });
   });
 
 app.post("/api/users/:_id/exercises", (req, res) => {
   const { _id } = req.params;
-  const { description, duration } = req.body;
-  const date = req.body.date ? new Date(req.body.date) : new Date();
+  const { description, duration, date } = req.body;
 
-  const exercise = {
+  const exercise = new Exercise({
     description,
     duration: parseFloat(duration),
-    date,
-  };
+    date: date || undefined,
+  });
 
-  const user = tracker.find((d) => d._id === _id);
-  user.log.push(exercise);
-
-  res.json({
-    _id,
-    username: user.username,
-    date: exercise.date.toDateString(),
-    duration: exercise.duration,
-    description: exercise.description,
+  User.findById(_id, (err, data) => {
+    if (err) {
+      res.json({ err });
+    } else {
+      data.log.push(exercise);
+      data.save((err, data) => {
+        if (err) {
+          res.json({ err });
+        } else {
+          const { _id, username } = data;
+          const { date, duration, description } = data.log[data.log.length - 1];
+          res.json({
+            _id,
+            username,
+            date: date.toDateString(),
+            duration: duration,
+            description: description,
+          });
+        }
+      });
+    }
   });
 });
 
 app.get("/api/users/:_id/logs", (req, res) => {
+  const { _id } = req.params;
   const { to, from, limit } = req.query;
 
-  const user = tracker.find(({ _id }) => _id === req.params._id);
-  const { _id, username } = user;
-  let log = [...user.log].sort((a, b) => b.date - a.date);
+  User.findById(_id, (err, data) => {
+    if (err) {
+      res.json({ err });
+    } else {
+      let log = [...data.log].sort((a, b) => b.date - a.date);
 
-  if (to) {
-    const date = new Date(to);
-    log = log.filter((d) => d.date < date);
-  }
+      if (to) {
+        const date = new Date(to);
+        log = log.filter((d) => d.date < date);
+      }
 
-  if (from) {
-    const date = new Date(from);
-    log = log.filter((d) => d.date > date);
-  }
+      if (from) {
+        const date = new Date(from);
+        log = log.filter((d) => d.date > date);
+      }
 
-  if (limit) {
-    log = log.slice(0, limit);
-  }
+      if (limit) {
+        log = log.slice(0, limit);
+      }
 
-  res.json({
-    _id,
-    username,
-    count: log.length,
-    log: log.map(({ description, duration, date }) => ({
-      description,
-      duration,
-      date: date.toDateString(),
-    })),
+      const { _id, username } = data;
+
+      res.json({
+        _id,
+        username,
+        count: log.length,
+        log: log.map(({ description, duration, date }) => ({
+          description,
+          duration,
+          date: date.toDateString(),
+        })),
+      });
+    }
   });
 });
 
-const listener = app.listen(process.env.PORT || 3000, () => {
-  console.log("Your app is listening on port " + listener.address().port);
-});
+mongoose
+  .connect(process.env.MONGO_URI, { useNewUrlParser: true })
+  .then(() => {
+    const listener = app.listen(process.env.PORT || 3000, () => {
+      console.log("Your app is listening on port " + listener.address().port);
+    });
+  })
+  .catch((error) => {
+    console.log(error);
+    process.exit(1);
+  });
