@@ -11,6 +11,8 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/views/index.html");
 });
 
+app.use(bodyParser.urlencoded({ extended: false }));
+
 const exerciseSchema = new mongoose.Schema({
   description: {
     type: String,
@@ -39,8 +41,6 @@ const userSchema = new mongoose.Schema({
 
 const Exercise = mongoose.model("Exercise", exerciseSchema);
 const User = mongoose.model("User", userSchema);
-
-app.use(bodyParser.urlencoded({ extended: false }));
 
 app
   .route("/api/users")
@@ -100,8 +100,8 @@ app.post("/api/users/:_id/exercises", (req, res) => {
             _id,
             username,
             date: date.toDateString(),
-            duration: duration,
-            description: description,
+            duration,
+            description,
           });
         }
       });
@@ -119,14 +119,12 @@ app.get("/api/users/:_id/logs", (req, res) => {
     } else {
       let log = [...data.log].sort((a, b) => b.date - a.date);
 
-      if (to) {
-        const date = new Date(to);
-        log = log.filter((d) => d.date < date);
+      if (from) {
+        log = log.filter((d) => d.date > new Date(from));
       }
 
-      if (from) {
-        const date = new Date(from);
-        log = log.filter((d) => d.date > date);
+      if (to) {
+        log = log.filter((d) => d.date < new Date(to));
       }
 
       if (limit) {

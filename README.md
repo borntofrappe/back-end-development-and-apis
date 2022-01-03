@@ -34,6 +34,35 @@ Notes and solutions to earn the [Back End Development and APIs](https://www.free
 
 ### [Exercise Tracker](https://www.freecodecamp.org/learn/back-end-development-and-apis/back-end-development-and-apis-projects/exercise-tracker)
 
+```json
+{
+  "username": "Gabriele",
+  "_id": "61d30574e1ab7047940a9161"
+}
+```
+
+```json
+{
+  "_id": "61d30574e1ab7047940a9161",
+  "username": "Gabriele",
+  "date": "Mon Jan 03 2022",
+  "duration": 35,
+  "description": "Running"
+}
+```
+
+```json
+{
+  "_id": "61d30574e1ab7047940a9161",
+  "username": "Gabriele",
+  "count": 2,
+  "log": [
+    { "description": "Running", "duration": 35, "date": "Mon Jan 03 2022" },
+    { "description": "Hiking", "duration": 60, "date": "Sat Jan 01 2022" }
+  ]
+}
+```
+
 ### [File Metadata Microservice](https://www.freecodecamp.org/learn/back-end-development-and-apis/back-end-development-and-apis-projects/file-metadata-microservice)
 
 ## Courses
