@@ -31,7 +31,7 @@ Response:
 }
 ```
 
-The `_id` from the assignment resembles that included by Mongoose when creating a document, but to get started without a database use either an incrementing integer or `Math.random()`
+The `_id` from the assignment resembles that included by Mongoose when creating a document, but to get started without a database use an incrementing integer
 
 ### Get users
 

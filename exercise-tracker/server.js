@@ -23,12 +23,39 @@ app
     const { username } = req.body;
     const user = {
       username,
-      _id: Math.random(),
+      _id: tracker.length,
+      log: [],
     };
     tracker.push(user);
 
-    res.json(user);
+    res.json({
+      username: user.username,
+      _id: user._id,
+    });
   });
+
+app.post("/api/users/:_id/exercises", (req, res) => {
+  const _id = parseInt(req.params._id, 10);
+  const { description, duration } = req.body;
+  const date = req.body.date ? new Date(req.body.date) : new Date();
+
+  const exercise = {
+    description,
+    duration: parseFloat(duration),
+    date,
+  };
+
+  const user = tracker.find((d) => d._id === _id);
+  user.log.push(exercise);
+
+  res.json({
+    _id,
+    username: user.username,
+    date: exercise.date.toDateString(),
+    duration: exercise.duration,
+    description: exercise.description,
+  });
+});
 
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log("Your app is listening on port " + listener.address().port);
